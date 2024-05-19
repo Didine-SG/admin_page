@@ -1,11 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const UserCard = ({ user }) => {
-  const { first_name, last_name, name } = user; // Destructure user properties
+  const { first_name, last_name, name } = user; 
+  const navigate = useNavigate();
 
   const handleDetailsClick = () => {
-    // Handle details button click here
-    console.log(`Details clicked for ${user.name ? name : `${first_name} ${last_name} `}`);
+    navigate(`/candidate/${user.userID}`)
   };
 
   return (
