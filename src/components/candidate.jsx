@@ -6,20 +6,20 @@ const UserCard = ({ user }) => {
   const navigate = useNavigate();
 
   const handleDetailsClick = () => {
-    navigate(`/candidate/${user.userID}`)
+    navigate(`/candidate/${user.userID}`, {state:user})
   };
 
   return (
-    <div style={{ width: 400, height: 100, border: '1px solid black', padding: 10, marginBottom: 10 }}>
+    <div className = "mx-10 my-10 rounded-lg bg-white" style={{ width: 400, height: 110, border: '3px solid black', padding: 10, marginBottom: 10 }}>
       {user.name ? (
-        <div>Name: {name}</div>
+        <div className='bg-white'>Name: {name}</div>
       ) : (
-        <div>
-          <div>First Name: {first_name}</div>
-          <div>Last Name: {last_name}</div>
+        <div >
+          <div className='bg-white'>First Name: {first_name}</div>
+          <div className='bg-white'>Last Name: {last_name}</div>
         </div>
       )}
-      <button style={{ float: 'right' }} onClick={handleDetailsClick}>Details</button>
+      <button className = "bg-slate-500 px-3 py-1 border-2 border-black rounded-lg text-white "style={{ float: 'right' }} onClick={handleDetailsClick}>Details</button>
     </div>
   );
 };

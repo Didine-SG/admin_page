@@ -2,6 +2,18 @@ import { RouterProvider, createBrowserRouter, Route, createRoutesFromElements, N
 import Login from './pages/login';
 import Dashboard from './pages/dashboard';
 import CandidateProfile from './pages/candidate.jsx';
+import Navbar from './components/navbar.jsx';
+import UsersPage from './pages/allUsers.jsx';
+import "./index.css"
+
+function Layout() {
+  return (
+    <div>
+      <Navbar />
+      <Outlet />
+    </div>
+  );
+}
 
 function ProtectedRoute() {
   const token = localStorage.getItem('token');
@@ -22,8 +34,11 @@ const router = createBrowserRouter(
     <Route path="/login" element={<Login />} />
 
     <Route element={<ProtectedRoute />}>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="candidate/:id" element={<CandidateProfile />} />
+      <Route element={<Layout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/allUsers" element={<UsersPage />} />
+        <Route path="candidate/:id" element={<CandidateProfile />} />
+      </Route>
     </Route>
     </>
   )
@@ -31,7 +46,9 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <RouterProvider router={router}></RouterProvider>
+    <div >
+      <RouterProvider router={router}></RouterProvider>
+    </div>
   );
 }
 

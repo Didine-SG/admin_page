@@ -40,10 +40,10 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Welcome to the Main Page</h1>
-      <p>You are logged in.</p>
-      <button onClick={handleToggleUserType}>{userType === 'candidate' ? 'Enterprise' : 'Candidate'}</button>
-      <h2>Pending Users</h2>
+      <div className='mx-3 '>
+      <button className='rounded-md border-solid border-2 border-black p-2 my-8 bg-stone-300' onClick={handleToggleUserType}>{userType === 'candidate' ? 'Enterprise' : 'Candidate'}</button>
+      <h2 className='text-2xl text-3xl font-bold underline'>Pending Users:</h2>
+      </div>
       {isLoading ? (
         <p>Loading...</p> // Display loading message while fetching data
       ) : (
