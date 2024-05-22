@@ -5,6 +5,8 @@ import App from './App.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <div className="bg-gray-200 min-h-screen"> {/* Set the background color here */}
+      <App />
+    </div>
   </React.StrictMode>,
 )

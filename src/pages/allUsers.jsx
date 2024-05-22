@@ -5,21 +5,9 @@ import UserCard from '../components/candidate';
 
 const UsersPage = () => {
   const [userType, setUserType] = useState('candidate');
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-  const [userID, setUserID]= useState()
-
-
-  const buildQueryString = (params) => {
-    const query = new URLSearchParams();
-    for (const key in params) {
-      if (params[key]) {
-        query.append(key, params[key]);
-      }
-    }
-    return query.toString();
-  };
-  
+  const [userID, setUserID] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,17 +15,16 @@ const UsersPage = () => {
       navigate('/login');
     } else {
       fetchAllUsers();
-      console.log(users)
     }
   }, [navigate, userType]);
 
   const fetchAllUsers = async () => {
     try {
+      console.log(`fetching for ${userType}`)
       let url;
-      let response; // Declare response here
-  
+      let response;
+
       if (userID) {
-        console.log('searched with userID');
         url = `http://localhost:3000/${userType}/get/${userID}`;
         response = await axios.get(url);
         setUsers([response.data.userData]);
@@ -46,19 +33,16 @@ const UsersPage = () => {
         response = await axios.get(url);
         setUsers(response.data);
       }
-      console.log(url);
-      console.log(response); // Now you can access response here
     } catch (error) {
       console.error('Error:', error);
       if (error.response && error.response.status >= 400 && error.response.status < 500) {
-        // Client error, set users to empty array
-        setUsers([]);}
+        setUsers([]);
+      }
     }
   };
 
   const handleToggleUserType = () => {
     setUserType((prevType) => (prevType === 'candidate' ? 'entreprise' : 'candidate'));
-    fetchAllUsers()
   };
 
   const handleInputChange = (e) => {
@@ -71,25 +55,41 @@ const UsersPage = () => {
   };
 
   return (
-    <div>
-      <div className='my-12 mx-12'>
-        <button className='rounded-md border-solid border-1 border-black p-2 my-8 bg-stone-300' onClick={handleToggleUserType}>
-          {userType === 'candidate' ? 'Enterprise' : 'Candidate'}
+    <div className="container mx-auto p-6 ">
+      <div className="my-6 flex justify-between items-center">
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow"
+          onClick={handleToggleUserType}
+        >
+          {userType === 'candidate' ? 'Candidate' : 'Entreprise'}
         </button>
-        <form onSubmit={handleSearchSubmit}>
-          <input type="number" value={userID} onChange={handleInputChange} placeholder="Search by userID" />
-          <input type="submit" value='Search' />
+        <form onSubmit={handleSearchSubmit} className="flex items-center space-x-4">
+          <input
+            type="number"
+            value={userID}
+            onChange={handleInputChange}
+            placeholder="Search by userID"
+            className="border border-gray-300 rounded py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="submit"
+            value="Search"
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow cursor-pointer"
+          />
         </form>
       </div>
 
-      {users.length === 0 ? ( // Check if users array is empty
-      <p>No users found</p>
-    ) : (
-      users.map(user => (
-        <UserCard key={user.userID} user={user} />
-      ))
-    )}
+      {users.length === 0 ? (
+        <p className="text-center text-gray-500">No users found</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {users.map(user => (
+            <UserCard key={user.userID} user={user} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
-export default UsersPage
+
+export default UsersPage;

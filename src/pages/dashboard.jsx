@@ -1,57 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UserCard from '../components/candidate';
 
 const Dashboard = () => {
-
   const navigate = useNavigate();
   const [userType, setUserType] = useState('candidate');
   const [pendingUsers, setPendingUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
     } else {
-      fetchPendingUsers();
+      fetchPendingUsers(userType); // Fetch data based on the current userType
     }
-  }, [navigate]);
+  }, [navigate, userType]); // Fetch data whenever userType changes
 
-  const fetchPendingUsers = async () => {
+  const fetchPendingUsers = async (type) => {
     try {
-      const response = await axios.get(`http://localhost:3000/${userType}/search`, {
-        params: { is_verified: 'pending' }
+      console.log(`fetching for ${userType}`)
+      const response = await axios.get(`http://localhost:3000/${type}/search`, {
+        params: { is_verified: 'pending' },
       });
       setPendingUsers(response.data);
-      setIsLoading(false); // Set loading state to false after data is fetched
     } catch (error) {
       console.error('Error:', error);
-      setIsLoading(false); // Set loading state to false even if there's an error
     }
   };
 
-  const handleToggleUserType = async () => {
+  const handleToggleUserType = () => {
     setUserType((prevType) => (prevType === 'candidate' ? 'entreprise' : 'candidate'));
-    setIsLoading(true); // Set loading state to true before fetching new data
-    await fetchPendingUsers(); // Wait for fetchPendingUsers() to complete before updating isLoading
   };
 
   return (
-    <div>
-      <div className='mx-3 '>
-      <button className='rounded-md border-solid border-2 border-black p-2 my-8 bg-stone-300' onClick={handleToggleUserType}>{userType === 'candidate' ? 'Enterprise' : 'Candidate'}</button>
-      <h2 className='text-2xl text-3xl font-bold underline'>Pending Users:</h2>
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <button 
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow"
+          onClick={handleToggleUserType}
+        >
+          {userType === 'candidate' ? 'Candidate' : 'Entreprise'}
+        </button>
+        <h2 className="text-3xl font-bold underline">Users Pending Verification</h2>
       </div>
-      {isLoading ? (
-        <p>Loading...</p> // Display loading message while fetching data
-      ) : (
-        pendingUsers.map(user => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {pendingUsers.map((user) => (
           <UserCard key={user.id} user={user} />
-        ))
-      )}
+        ))}
+      </div>
     </div>
   );
 };
-export default Dashboard
+
+export default Dashboard;
